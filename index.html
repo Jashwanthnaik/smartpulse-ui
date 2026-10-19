@@ -3,615 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPulse Functional Banking App</title>
+    <title>SmartPulse Banking</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-                }
-            }
-        }
-    </script>
-    <style>
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.5); border-radius: 9999px; }
-        .phone-frame { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 12px #0f172a, 0 0 0 14px #334155; }
-        .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        /* Toggle Switch Styles */
-        .toggle-checkbox:checked { right: 0; border-color: #6366f1; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #6366f1; }
-    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4 select-none">
+<body class="bg-slate-900 text-white min-h-screen flex justify-center p-4 font-sans">
 
-    <!-- App Container -->
-    <main class="w-full max-w-[390px] h-[780px] bg-slate-950 rounded-[48px] phone-frame relative overflow-hidden flex flex-col border border-slate-800">
+    <!-- Mobile App Container -->
+    <div class="w-full max-w-md bg-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-700 relative">
         
-        <!-- Status Bar -->
-        <div class="pt-3 px-6 flex justify-between items-center text-xs font-semibold text-slate-400 z-30 shrink-0">
-            <span id="clock">9:41</span>
-            <div class="w-24 h-5 bg-black rounded-full absolute left-1/2 -translate-x-1/2 top-2 flex items-center justify-center">
-                <div class="w-2 h-2 rounded-full bg-slate-800 mr-2"></div><div class="w-1.5 h-1.5 rounded-full bg-slate-800"></div>
+        <!-- Header -->
+        <div class="p-6 bg-slate-800 pb-2">
+            <h1 class="text-2xl font-bold tracking-tight">SmartPulse</h1>
+            <p class="text-slate-400 text-sm">Welcome back</p>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="tab-dashboard" class="p-6 space-y-6">
+            <!-- Balance Card -->
+            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 shadow-lg">
+                <p class="text-indigo-100 text-sm font-medium mb-1">Available Balance</p>
+                <h2 id="display-balance" class="text-4xl font-bold">$1,240.50</h2>
             </div>
-            <div class="flex space-x-1.5"><i class="fa-solid fa-signal text-[10px]"></i><i class="fa-solid fa-wifi text-[10px]"></i><i class="fa-solid fa-battery-full text-xs"></i></div>
-        </div>
 
-        <!-- Loading Screen -->
-        <div id="loading-screen" class="absolute inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center">
-            <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-600/30 mb-6 animate-pulse">
-                <i class="fa-solid fa-bolt-lightning text-white text-2xl"></i>
+            <!-- Savings Goal Widget -->
+            <div class="bg-slate-700 rounded-2xl p-5 border border-slate-600">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-semibold">Spring Break Trip</h3>
+                    <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-1 rounded-full border border-indigo-500/30">Round-Ups Active</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-2.5 mb-2">
+                    <div id="goal-progress" class="bg-indigo-400 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-slate-400"><span id="goal-current" class="text-white font-medium">$0.00</span> / $500.00</p>
             </div>
-            <h2 class="text-xl font-bold text-white mb-2">SmartPulse</h2>
-            <p class="text-slate-400 text-sm" id="loading-text">Authenticating securely...</p>
+
+            <!-- Add Transaction -->
+            <div>
+                <h3 class="font-semibold mb-3">Quick Add Expense</h3>
+                <div class="flex gap-2">
+                    <input type="number" id="expense-amount" placeholder="$ Amount" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-xl px-3 py-2 w-full focus:outline-none focus:border-indigo-500">
+                    <select id="expense-category" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-xl px-3 py-2 focus:outline-none">
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Shopping">Shopping</option>
+                    </select>
+                    <button onclick="addTransaction()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors">Add</button>
+                </div>
+            </div>
+
+            <!-- Recent Transactions Feed -->
+            <div>
+                <h3 class="font-semibold mb-3">Recent Transactions</h3>
+                <div id="transaction-list" class="space-y-3">
+                    <!-- Transactions injected here by JS -->
+                </div>
+            </div>
         </div>
+    </div>
 
-        <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto px-5 pt-4 pb-24 relative z-10 hidden" id="main-content">
-            
-            <!-- HOME VIEW -->
-            <section id="view-home" class="fade-in space-y-5">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-xs text-indigo-400 font-semibold uppercase">SmartPulse Checking</p>
-                        <h2 class="text-xl font-bold" id="user-display-name">Welcome User</h2>
-                    </div>
-                </div>
-
-                <!-- Balance Card -->
-                <div class="bg-gradient-to-br from-indigo-600 to-violet-800 rounded-3xl p-5 text-white shadow-xl shadow-indigo-600/20 relative overflow-hidden">
-                    <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                    <p class="text-xs text-indigo-200 mb-1">Available Balance</p>
-                    <h3 class="text-3xl font-extrabold tracking-tight mb-4" id="display-balance">$0.00</h3>
-                    <div class="flex justify-between items-end border-t border-white/15 pt-3">
-                        <div>
-                            <p class="text-[10px] text-indigo-200 uppercase">Savings Goal</p>
-                            <p class="text-sm font-semibold" id="display-goal-title">New Laptop</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[10px] text-indigo-200 uppercase">Saved</p>
-                            <p class="text-sm font-bold text-emerald-300" id="display-goal-amount">$0.00</p>
-                        </div>
-                    </div>
-                    <!-- Goal Progress Bar -->
-                    <div class="w-full h-1.5 bg-black/20 rounded-full mt-2 overflow-hidden">
-                        <div id="goal-progress-bar" class="h-full bg-emerald-400 rounded-full transition-all duration-500" style="width: 0%;"></div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="switchView('add-tx')" class="flex items-center justify-center space-x-2 bg-slate-900 border border-slate-800 p-3 rounded-2xl hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-plus text-indigo-400"></i><span class="text-xs font-semibold">Add Expense</span>
-                    </button>
-                    <button onclick="switchView('settings')" class="flex items-center justify-center space-x-2 bg-slate-900 border border-slate-800 p-3 rounded-2xl hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-gear text-slate-400"></i><span class="text-xs font-semibold">Settings</span>
-                    </button>
-                </div>
-
-                <!-- Recent Transactions -->
-                <div>
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 class="text-sm font-bold text-slate-200">Recent Transactions</h4>
-                        <button onclick="switchView('analytics')" class="text-xs text-indigo-400 font-semibold">Analytics</button>
-                    </div>
-                    <div id="tx-list" class="space-y-2.5 min-h-[150px]">
-                        <!-- Transactions injected here -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- ANALYTICS VIEW -->
-            <section id="view-analytics" class="hidden fade-in space-y-5">
-                <div>
-                    <h2 class="text-xl font-bold">Spend Analytics</h2>
-                    <p class="text-xs text-slate-400">Your categorized expenses</p>
-                </div>
-                
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl text-center">
-                    <p class="text-xs text-slate-400 mb-1">Total Spent</p>
-                    <h3 class="text-3xl font-extrabold text-slate-100" id="analytics-total">$0.00</h3>
-                </div>
-
-                <div class="space-y-3" id="analytics-bars">
-                    <!-- Analytics bars injected here -->
-                </div>
-            </section>
-
-            <!-- ADD TRANSACTION VIEW -->
-            <section id="view-add-tx" class="hidden fade-in space-y-5">
-                <div>
-                    <h2 class="text-xl font-bold">New Expense</h2>
-                    <p class="text-xs text-slate-400">Record a purchase</p>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4">
-                    <div>
-                        <label class="text-xs font-semibold text-slate-400 block mb-1">Amount ($)</label>
-                        <input type="number" id="input-amount" step="0.01" min="0.01" placeholder="0.00" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-lg font-bold text-white focus:outline-none focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-slate-400 block mb-1">Description</label>
-                        <input type="text" id="input-desc" placeholder="e.g. Starbucks, Uber" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-slate-400 block mb-1">Category</label>
-                        <select id="input-category" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 appearance-none">
-                            <option value="Food & Dining">Food & Dining</option>
-                            <option value="Shopping">Shopping</option>
-                            <option value="Subscriptions">Subscriptions</option>
-                            <option value="Utilities">Utilities</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <button onclick="processTransaction()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/30 transition mt-2 flex justify-center items-center">
-                        <span id="btn-submit-text">Record Expense</span>
-                        <i id="btn-submit-spinner" class="fa-solid fa-circle-notch fa-spin ml-2 hidden"></i>
-                    </button>
-                </div>
-            </section>
-
-            <!-- SETTINGS / GOALS VIEW -->
-            <section id="view-settings" class="hidden fade-in space-y-5">
-                <div>
-                    <h2 class="text-xl font-bold">Settings & Goals</h2>
-                    <p class="text-xs text-slate-400">Manage your money rules</p>
-                </div>
-
-                <!-- Round-Up Toggle Card -->
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl flex items-center justify-between">
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-100 flex items-center">
-                            <i class="fa-solid fa-piggy-bank text-emerald-400 mr-2"></i> Round-Up Savings
-                        </h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5 max-w-[200px]">Automatically round purchases to the nearest dollar and save the spare change.</p>
-                    </div>
-                    
-                    <!-- Toggle Switch -->
-                    <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-                        <input type="checkbox" name="toggle" id="roundup-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-all duration-300" style="top: 2px; left: 2px; border-color: #334155;"/>
-                        <label for="roundup-toggle" class="toggle-label block overflow-hidden h-7 rounded-full bg-slate-700 cursor-pointer transition-colors duration-300"></label>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-2">
-                    <h4 class="text-sm font-bold text-slate-100">Reset Account</h4>
-                    <p class="text-xs text-slate-400 mb-3">Reset your balance to $5000 and clear all transactions. (For testing purposes).</p>
-                    <button onclick="resetAccountData()" class="w-full py-2.5 bg-rose-500/10 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold hover:bg-rose-500/20 transition">Reset Everything</button>
-                </div>
-            </section>
-
-        </div>
-
-        <!-- Bottom Navigation -->
-        <nav id="bottom-nav" class="absolute bottom-0 left-0 right-0 h-20 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800/80 px-6 flex items-center justify-between z-30 hidden">
-            <button onclick="switchView('home')" class="nav-btn flex flex-col items-center justify-center space-y-1 text-indigo-400 font-bold group flex-1" data-target="home">
-                <i class="fa-solid fa-house text-base group-hover:scale-110 transition"></i>
-                <span class="text-[10px]">Home</span>
-            </button>
-            <button onclick="switchView('analytics')" class="nav-btn flex flex-col items-center justify-center space-y-1 text-slate-500 hover:text-slate-300 font-semibold group flex-1" data-target="analytics">
-                <i class="fa-solid fa-chart-pie text-base group-hover:scale-110 transition"></i>
-                <span class="text-[10px]">Analytics</span>
-            </button>
-            <button onclick="switchView('add-tx')" class="nav-btn flex flex-col items-center justify-center space-y-1 text-slate-500 hover:text-slate-300 font-semibold group flex-1" data-target="add-tx">
-                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white mb-1 shadow-md shadow-indigo-600/30 group-hover:scale-110 transition">
-                    <i class="fa-solid fa-plus"></i>
-                </div>
-                <span class="text-[10px] hidden">Add</span>
-            </button>
-            <button onclick="switchView('settings')" class="nav-btn flex flex-col items-center justify-center space-y-1 text-slate-500 hover:text-slate-300 font-semibold group flex-1" data-target="settings">
-                <i class="fa-solid fa-gear text-base group-hover:scale-110 transition"></i>
-                <span class="text-[10px]">Settings</span>
-            </button>
-        </nav>
-
-        <!-- Custom Toast -->
-        <div id="toast" class="absolute top-12 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 text-white px-4 py-2 rounded-2xl shadow-2xl text-xs font-semibold z-50 transition-all duration-300 opacity-0 pointer-events-none flex items-center space-x-2">
-            <i class="fa-solid fa-circle-info text-indigo-400" id="toast-icon"></i>
-            <span id="toast-msg">Message</span>
-        </div>
-
-    </main>
-
-    <!-- Firebase SDKs -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, addDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Global Setup
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'smartpulse-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "mock", authDomain: "mock", projectId: "mock", storageBucket: "mock", messagingSenderId: "mock", appId: "mock"
-        };
-        const authToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let app, auth, db, currentUserId;
-        
-        // App State
-        let currentStats = {
-            balance: 5000.00,
-            roundUpEnabled: false,
-            goalTotal: 1000.00,
-            goalCurrent: 0.00
-        };
-        let currentTransactions = [];
-        let unsubStats = null;
-        let unsubTx = null;
-
-        // UI Elements
-        const elLoading = document.getElementById('loading-screen');
-        const elMain = document.getElementById('main-content');
-        const elNav = document.getElementById('bottom-nav');
-        
-        // Clock
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
-        }, 1000);
-
-        // Initialize App
-        async function init() {
-            try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                if (authToken) {
-                    await signInWithCustomToken(auth, authToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        currentUserId = user.uid;
-                        document.getElementById('user-display-name').innerText = `User ${user.uid.substring(0,4)}`;
-                        await loadUserData();
-                        setupRealtimeListeners();
-                        
-                        // Hide loading, show app
-                        setTimeout(() => {
-                            elLoading.classList.add('hidden');
-                            elMain.classList.remove('hidden');
-                            elNav.classList.remove('hidden');
-                        }, 500);
-                    }
-                });
-            } catch (err) {
-                console.error("Init Error:", err);
-                document.getElementById('loading-text').innerText = "Initialization failed. Check console.";
-            }
-        }
-
-        async function loadUserData() {
-            if (!currentUserId) return;
-            const statsRef = doc(db, 'artifacts', appId, 'users', currentUserId);
-            const snap = await getDoc(statsRef);
-            
-            if (!snap.exists()) {
-                // Initialize new user
-                await setDoc(statsRef, currentStats);
-            } else {
-                currentStats = snap.data();
-            }
-            updateStatsUI();
-
-            // Setup round-up toggle listener
-            const toggle = document.getElementById('roundup-toggle');
-            toggle.checked = currentStats.roundUpEnabled;
-            toggle.addEventListener('change', async (e) => {
-                const isEnabled = e.target.checked;
-                try {
-                    await updateDoc(statsRef, { roundUpEnabled: isEnabled });
-                    showToast(isEnabled ? "Round-Ups Activated!" : "Round-Ups Paused");
-                } catch(err) {
-                    console.error(err);
-                    e.target.checked = !isEnabled; // revert
-                }
-            });
-        }
-
-        function setupRealtimeListeners() {
-            if (!currentUserId) return;
-            
-            // Listen to Stats
-            const statsRef = doc(db, 'artifacts', appId, 'users', currentUserId);
-            unsubStats = onSnapshot(statsRef, (doc) => {
-                if (doc.exists()) {
-                    currentStats = doc.data();
-                    updateStatsUI();
-                    document.getElementById('roundup-toggle').checked = currentStats.roundUpEnabled;
-                }
-            }, (error) => console.error("Stats listen error", error));
-
-            // Listen to Transactions
-            const txRef = collection(db, 'artifacts', appId, 'users', currentUserId, 'transactions');
-            unsubTx = onSnapshot(txRef, (snapshot) => {
-                currentTransactions = [];
-                snapshot.forEach(doc => {
-                    currentTransactions.push({ id: doc.id, ...doc.data() });
-                });
-                // Sort descending by timestamp (in memory)
-                currentTransactions.sort((a, b) => b.timestamp - a.timestamp);
-                renderTransactions();
-                renderAnalytics();
-            }, (error) => console.error("Tx listen error", error));
-        }
-
-        // --- Core Business Logic ---
-        
-        window.processTransaction = async function() {
-            if (!currentUserId) return;
-            const amountInput = document.getElementById('input-amount').value;
-            const desc = document.getElementById('input-desc').value || 'Unknown Merchant';
-            const category = document.getElementById('input-category').value;
-            
-            const amount = parseFloat(amountInput);
-            if (isNaN(amount) || amount <= 0) {
-                showToast("Enter a valid amount", true);
-                return;
-            }
-            if (amount > currentStats.balance) {
-                showToast("Insufficient funds!", true);
-                return;
-            }
-
-            // Start UI Spinner
-            document.getElementById('btn-submit-text').innerText = 'Processing...';
-            document.getElementById('btn-submit-spinner').classList.remove('hidden');
-
-            try {
-                let totalDeduction = amount;
-                let roundUpAmount = 0;
-                let isRoundup = false;
-
-                // Calculate Round-up
-                if (currentStats.roundUpEnabled) {
-                    const ceil = Math.ceil(amount);
-                    roundUpAmount = parseFloat((ceil - amount).toFixed(2));
-                    
-                    // If exactly whole dollar, maybe round up next whole dollar (optional).
-                    // We'll stick to simple decimal roundups (e.g. 4.50 -> 5.00, diff 0.50).
-                    // If amount is 4.00, diff is 0.00.
-                    if (roundUpAmount > 0 && (currentStats.balance >= (amount + roundUpAmount))) {
-                        totalDeduction = amount + roundUpAmount;
-                        isRoundup = true;
-                    } else {
-                        roundUpAmount = 0; // Cancel roundup if not enough balance
-                    }
-                }
-
-                const batchTimestamp = Date.now();
-                const txCollection = collection(db, 'artifacts', appId, 'users', currentUserId, 'transactions');
-                const statsRef = doc(db, 'artifacts', appId, 'users', currentUserId);
-
-                // 1. Add Main Transaction
-                await addDoc(txCollection, {
-                    amount: amount,
-                    description: desc,
-                    category: category,
-                    timestamp: batchTimestamp,
-                    type: 'expense'
-                });
-
-                // 2. Add Round-up Transaction (if applicable)
-                if (isRoundup) {
-                    await addDoc(txCollection, {
-                        amount: roundUpAmount,
-                        description: `Round-Up: ${desc}`,
-                        category: 'Savings',
-                        timestamp: batchTimestamp + 1, // ensure it sorts slightly after
-                        type: 'roundup'
-                    });
-                }
-
-                // 3. Update Account Stats
-                await updateDoc(statsRef, {
-                    balance: parseFloat((currentStats.balance - totalDeduction).toFixed(2)),
-                    goalCurrent: parseFloat((currentStats.goalCurrent + roundUpAmount).toFixed(2))
-                });
-
-                // Reset Form & UI
-                document.getElementById('input-amount').value = '';
-                document.getElementById('input-desc').value = '';
-                showToast(`Recorded $${amount.toFixed(2)}` + (isRoundup ? ` (+ $${roundUpAmount.toFixed(2)} saved!)` : ''));
-                switchView('home');
-
-            } catch (err) {
-                console.error(err);
-                showToast("Transaction failed.", true);
-            } finally {
-                document.getElementById('btn-submit-text').innerText = 'Record Expense';
-                document.getElementById('btn-submit-spinner').classList.add('hidden');
-            }
+    <script>
+        // State Management using LocalStorage
+        let state = JSON.parse(localStorage.getItem('smartpulse_data')) || {
+            balance: 1240.50,
+            goalCurrent: 0.00,
+            transactions: []
         };
 
-        window.resetAccountData = async function() {
-            if (!currentUserId) return;
-            const confirmBtn = confirm("Are you sure? This will wipe transactions."); // Not allowed in strict environment? I will use a simple auto reset instead to adhere to rules, skipping confirm.
-            
-            try {
-                showToast("Resetting account data...");
-                const statsRef = doc(db, 'artifacts', appId, 'users', currentUserId);
-                await setDoc(statsRef, {
-                    balance: 5000.00,
-                    roundUpEnabled: false,
-                    goalTotal: 1000.00,
-                    goalCurrent: 0.00
-                });
-
-                // Delete all tx
-                const txCollection = collection(db, 'artifacts', appId, 'users', currentUserId, 'transactions');
-                const snap = await getDocs(txCollection);
-                const deletePromises = [];
-                snap.forEach(d => {
-                    deletePromises.push(deleteDoc(doc(db, 'artifacts', appId, 'users', currentUserId, 'transactions', d.id)));
-                });
-                await Promise.all(deletePromises);
-                
-                showToast("Account reset successfully.");
-                switchView('home');
-            } catch(e) {
-                console.error(e);
-                showToast("Error resetting.", true);
-            }
+        function saveData() {
+            localStorage.setItem('smartpulse_data', JSON.stringify(state));
+            updateUI();
         }
 
-
-        // --- UI Rendering ---
-
-        function updateStatsUI() {
-            document.getElementById('display-balance').innerText = `$${currentStats.balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('display-goal-amount').innerText = `$${currentStats.goalCurrent.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        function updateUI() {
+            document.getElementById('display-balance').innerText = `$${state.balance.toFixed(2)}`;
+            document.getElementById('goal-current').innerText = `$${state.goalCurrent.toFixed(2)}`;
             
-            let progress = (currentStats.goalCurrent / currentStats.goalTotal) * 100;
-            if(progress > 100) progress = 100;
-            document.getElementById('goal-progress-bar').style.width = `${progress}%`;
-        }
+            // Calculate progress bar
+            let progress = (state.goalCurrent / 500) * 100;
+            document.getElementById('goal-progress').style.width = `${Math.min(progress, 100)}%`;
 
-        const categoryIcons = {
-            'Food & Dining': { icon: 'fa-utensils', color: 'text-orange-400', bg: 'bg-orange-500/10' },
-            'Shopping': { icon: 'fa-bag-shopping', color: 'text-pink-400', bg: 'bg-pink-500/10' },
-            'Subscriptions': { icon: 'fa-clapperboard', color: 'text-violet-400', bg: 'bg-violet-500/10' },
-            'Utilities': { icon: 'fa-bolt', color: 'text-blue-400', bg: 'bg-blue-500/10' },
-            'Savings': { icon: 'fa-piggy-bank', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-            'Other': { icon: 'fa-receipt', color: 'text-slate-400', bg: 'bg-slate-500/10' }
-        };
-
-        function renderTransactions() {
-            const list = document.getElementById('tx-list');
+            // Render Transactions
+            const list = document.getElementById('transaction-list');
             list.innerHTML = '';
             
-            if (currentTransactions.length === 0) {
-                list.innerHTML = `<div class="text-center py-6 text-slate-500 text-xs">No recent transactions.</div>`;
-                return;
+            if(state.transactions.length === 0) {
+                list.innerHTML = '<p class="text-sm text-slate-400 text-center py-4">No recent transactions.</p>';
             }
 
-            // Show top 5 on home
-            const toShow = currentTransactions.slice(0, 5);
-            toShow.forEach(tx => {
-                const style = categoryIcons[tx.category] || categoryIcons['Other'];
-                const isRoundup = tx.type === 'roundup';
-                
-                const div = document.createElement('div');
-                div.className = "bg-slate-900 border border-slate-800 p-3 rounded-2xl flex items-center justify-between";
-                div.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl ${style.bg} ${style.color} flex items-center justify-center shrink-0">
-                            <i class="fa-solid ${style.icon}"></i>
+            state.transactions.slice().reverse().forEach(tx => {
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-700/50 p-3 rounded-xl border border-slate-600/50">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-slate-600 p-2 rounded-lg">
+                                🍔
+                            </div>
+                            <div>
+                                <p class="font-medium text-sm">${tx.category}</p>
+                                <p class="text-xs text-slate-400">Just now</p>
+                            </div>
                         </div>
-                        <div class="truncate">
-                            <h5 class="text-xs font-bold text-slate-100 truncate">${tx.description}</h5>
-                            <p class="text-[10px] text-slate-400">${tx.category}</p>
+                        <div class="text-right">
+                            <p class="font-semibold text-sm">-$${tx.amount.toFixed(2)}</p>
+                            ${tx.roundup > 0 ? `<p class="text-xs text-indigo-400">+$${tx.roundup.toFixed(2)} saved</p>` : ''}
                         </div>
                     </div>
-                    <div class="text-right shrink-0 ml-2">
-                        <span class="text-xs font-bold ${isRoundup ? 'text-emerald-400' : 'text-slate-100'}">
-                            ${isRoundup ? '+' : '-'}$${tx.amount.toFixed(2)}
-                        </span>
-                    </div>
                 `;
-                list.appendChild(div);
             });
         }
 
-        function renderAnalytics() {
-            // Calculate totals per category (excluding roundups for pure expense tracking)
-            const totals = {};
-            let grandTotal = 0;
+        function addTransaction() {
+            const amountInput = document.getElementById('expense-amount');
+            const category = document.getElementById('expense-category').value;
+            let amount = parseFloat(amountInput.value);
 
-            currentTransactions.forEach(tx => {
-                if (tx.type === 'expense') {
-                    totals[tx.category] = (totals[tx.category] || 0) + tx.amount;
-                    grandTotal += tx.amount;
-                }
-            });
+            if (isNaN(amount) || amount <= 0) return alert("Enter a valid amount");
 
-            document.getElementById('analytics-total').innerText = `$${grandTotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            // Calculate Round-Up (Nearest Dollar)
+            let roundedAmount = Math.ceil(amount);
+            let roundup = roundedAmount - amount;
+
+            // Prevent precision errors (e.g., 0.00000001)
+            roundup = parseFloat(roundup.toFixed(2));
+
+            // Update State
+            state.balance -= amount;
             
-            const container = document.getElementById('analytics-bars');
-            container.innerHTML = '';
-
-            if (grandTotal === 0) {
-                container.innerHTML = `<div class="text-center py-6 text-slate-500 text-xs">Record expenses to see analytics.</div>`;
-                return;
+            if (roundup > 0) {
+                state.balance -= roundup;
+                state.goalCurrent += roundup;
             }
 
-            // Sort categories by amount
-            const sortedCats = Object.keys(totals).sort((a, b) => totals[b] - totals[a]);
-
-            sortedCats.forEach(cat => {
-                const amount = totals[cat];
-                const pct = (amount / grandTotal) * 100;
-                const style = categoryIcons[cat] || categoryIcons['Other'];
-                // Extract color name for bar bg (e.g. text-orange-400 -> bg-orange-400)
-                const barColorClass = style.color.replace('text-', 'bg-');
-
-                const div = document.createElement('div');
-                div.className = "space-y-1.5 mb-4";
-                div.innerHTML = `
-                    <div class="flex justify-between text-xs font-semibold">
-                        <span class="text-slate-200">${cat}</span>
-                        <span class="text-slate-400">$${amount.toFixed(2)} <span class="text-slate-500 font-normal ml-1">(${pct.toFixed(0)}%)</span></span>
-                    </div>
-                    <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                        <div class="h-full ${barColorClass} rounded-full" style="width: ${pct}%;"></div>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
+            state.transactions.push({ amount, category, roundup });
+            
+            // Clear input and save
+            amountInput.value = '';
+            saveData();
         }
 
-        // --- Navigation & Utils ---
-        
-        window.switchView = function(viewId) {
-            // Hide all views
-            ['home', 'analytics', 'add-tx', 'settings'].forEach(id => {
-                document.getElementById(`view-${id}`).classList.add('hidden');
-            });
-            // Show target
-            document.getElementById(`view-${viewId}`).classList.remove('hidden');
-            
-            // Update Nav UI
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                const isTarget = btn.getAttribute('data-target') === viewId;
-                if (btn.getAttribute('data-target') !== 'add-tx') {
-                    btn.className = `nav-btn flex flex-col items-center justify-center space-y-1 group flex-1 ${isTarget ? 'text-indigo-400 font-bold' : 'text-slate-500 hover:text-slate-300 font-semibold'}`;
-                }
-            });
-        };
-
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').innerText = msg;
-            const icon = document.getElementById('toast-icon');
-            
-            if(isError) {
-                icon.className = "fa-solid fa-circle-exclamation text-rose-400";
-            } else {
-                icon.className = "fa-solid fa-circle-check text-emerald-400";
-            }
-
-            toast.style.opacity = '1';
-            toast.style.pointerEvents = 'auto';
-            toast.style.transform = 'translate(-50%, 10px)';
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.pointerEvents = 'none';
-                toast.style.transform = 'translate(-50%, 0)';
-            }, 3000);
-        }
-
-        // Run Init
-        window.onload = init;
-
+        // Initial Render
+        updateUI();
     </script>
 </body>
 </html>
