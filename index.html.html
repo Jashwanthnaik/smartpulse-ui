@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPulse Mobile Banking Mockup</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for mobile frame */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 9999px;
+        }
+        .phone-frame {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 12px #1f2937, 0 0 0 14px #374151;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 select-none">
+
+    <!-- Top Control Bar (Theme Toggle & View Selector) -->
+    <header class="w-full max-w-md mb-6 flex items-center justify-between px-2">
+        <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid fa-bolt-lightning text-sm"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">SmartPulse</h1>
+                <p class="text-xs text-slate-400">Apex Bank UX Prototype</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button onclick="toggleDarkMode()" id="themeToggleBtn" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition text-sm flex items-center justify-center border border-slate-700 shadow-sm" title="Toggle Theme">
+                <i class="fa-solid fa-moon" id="themeIcon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Smartphone Mockup Container -->
+    <main class="w-full max-w-[390px] h-[780px] bg-slate-950 text-slate-100 rounded-[48px] phone-frame relative overflow-hidden flex flex-col border-4 border-slate-800 transition-colors duration-300" id="phoneContainer">
+        
+        <!-- Status Bar -->
+        <div class="pt-3 px-6 flex justify-between items-center text-xs font-semibold text-slate-400 z-30 bg-inherit shrink-0">
+            <span id="currentTime">9:41</span>
+            <!-- Dynamic Notch Island -->
+            <div class="w-24 h-5 bg-black rounded-full mx-auto absolute left-1/2 -translate-x-1/2 top-2 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-slate-900 mr-2"></div>
+                <div class="w-2 h-2 rounded-full bg-slate-900"></div>
+            </div>
+            <div class="flex items-center space-x-1.5">
+                <i class="fa-solid fa-signal text-[10px]"></i>
+                <i class="fa-solid fa-wifi text-[10px]"></i>
+                <i class="fa-solid fa-battery-full text-xs"></i>
+            </div>
+        </div>
+
+        <!-- Scrollable Screen Content Area -->
+        <div class="flex-1 overflow-y-auto px-5 pt-4 pb-24 space-y-5 relative z-10" id="scrollContent">
+            
+            <!-- VIEW 1: DASHBOARD HOME -->
+            <section id="view-home" class="space-y-5 animate-fadeIn">
+                <!-- User Greeting & Header -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-indigo-400 font-semibold tracking-wide uppercase">Welcome back,</p>
+                        <h2 class="text-xl font-bold tracking-tight">Alex Morgan</h2>
+                    </div>
+                    <div class="relative">
+                        <button onclick="showNotificationMsg()" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition relative border border-slate-700">
+                            <i class="fa-regular fa-bell text-sm"></i>
+                            <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Balance Card -->
+                <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 rounded-3xl p-5 text-white shadow-xl shadow-indigo-600/20 relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-medium text-indigo-200 bg-white/10 px-3 py-1 rounded-full backdrop-blur-md">Apex Checking • *4829</span>
+                        <button onclick="toggleBalanceVisibility()" class="text-indigo-200 hover:text-white transition text-sm">
+                            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-xs text-indigo-200">Total Available Balance</p>
+                        <h3 class="text-3xl font-extrabold tracking-tight mt-0.5" id="balanceDisplay">$4,829.50</h3>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/15 text-xs text-indigo-100">
+                        <span class="flex items-center"><i class="fa-solid fa-arrow-trend-up text-emerald-300 mr-1.5"></i> +$340.00 this week</span>
+                        <span class="bg-emerald-500/20 text-emerald-300 font-semibold px-2 py-0.5 rounded">Spent 74% budget</span>
+                    </div>
+                </div>
+
+                <!-- Amber Alert Banner (Feedback Iteration #2) -->
+                <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex items-start space-x-3 transition hover:bg-amber-500/15">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Spending Spike Alert</h4>
+                            <span class="text-[10px] text-amber-400/80">Today</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">You spent 25% more on food & dining this week compared to your 3-week average.</p>
+                        <button onclick="switchTab('analytics')" class="mt-2.5 text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center space-x-1">
+                            <span>View Food Breakdown</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Savings Goal Widget (Feedback Iteration #4 - Gamified Milestone Badge) -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-laptop"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-100">New MacBook Pro</h4>
+                                <p class="text-xs text-slate-400">Round-Up Rule: Active ($0.50/tx)</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center">
+                            <i class="fa-solid fa-medal mr-1 text-xs"></i> 25% Club
+                        </span>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-xs font-medium">
+                            <span class="text-slate-400">$340 saved</span>
+                            <span class="text-slate-200 font-semibold">$500 Goal</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-1000" style="width: 68%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-[11px] text-slate-400"><i class="fa-solid fa-bolt text-amber-400 mr-1"></i> 14 round-ups this week ($7.20)</span>
+                        <button onclick="switchTab('goals')" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300">Manage Goal</button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Grid -->
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="switchTab('analytics')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition group">
+                        <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 text-indigo-400 group-hover:scale-105 transition flex items-center justify-center mb-1.5">
+                            <i class="fa-solid fa-chart-pie text-sm"></i>
+                        </div>
+                        <span class="text-[11px] font-medium text-slate-300">Analytics</span>
+                    </button>
+                    <button onclick="switchTab('goals')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition group">
+                        <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-400 group-hover:scale-105 transition flex items-center justify-center mb-1.5">
+                            <i class="fa-solid fa-piggy-bank text-sm"></i>
+                        </div>
+                        <span class="text-[11px] font-medium text-slate-300">Round-Ups</span>
+                    </button>
+                    <button onclick="showQuickModal('Send Money')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition group">
+                        <div class="w-11 h-11 rounded-2xl bg-violet-500/10 text-violet-400 group-hover:scale-105 transition flex items-center justify-center mb-1.5">
+                            <i class="fa-solid fa-arrow-right-arrow-left text-sm"></i>
+                        </div>
+                        <span class="text-[11px] font-medium text-slate-300">Transfer</span>
+                    </button>
+                    <button onclick="showQuickModal('Cards & Security')" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition group">
+                        <div class="w-11 h-11 rounded-2xl bg-sky-500/10 text-sky-400 group-hover:scale-105 transition flex items-center justify-center mb-1.5">
+                            <i class="fa-solid fa-shield-halved text-sm"></i>
+                        </div>
+                        <span class="text-[11px] font-medium text-slate-300">Cards</span>
+                    </button>
+                </div>
+
+                <!-- Recent Transactions Feed -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-slate-200">Recent Transactions</h4>
+                        <button onclick="switchTab('analytics')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">See All</button>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <div class="bg-slate-900 border border-slate-800/80 p-3.5 rounded-2xl flex items-center justify-between hover:border-slate-700 transition">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center">
+                                    <i class="fa-solid fa-utensils"></i>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-100">Blue Bottle Coffee</h5>
+                                    <p class="text-[10px] text-slate-400">Food & Dining • Today, 8:42 AM</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-bold text-slate-100">-$5.75</span>
+                                <p class="text-[9px] text-emerald-400">+ $0.25 round-up</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-800/80 p-3.5 rounded-2xl flex items-center justify-between hover:border-slate-700 transition">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-100">Trader Joe's Market</h5>
+                                    <p class="text-[10px] text-slate-400">Groceries • Yesterday</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-bold text-slate-100">-$42.10</span>
+                                <p class="text-[9px] text-emerald-400">+ $0.90 round-up</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: SPEND ANALYTICS DEEP DIVE -->
+            <section id="view-analytics" class="space-y-5 hidden animate-fadeIn">
+                <!-- Header -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold tracking-tight">Spend Analytics</h2>
+                        <p class="text-xs text-slate-400">SmartPulse Insights engine</p>
+                    </div>
+                    <div class="bg-slate-800 p-1 rounded-xl flex space-x-1 border border-slate-700">
+                        <button onclick="setTimeFilter('week')" id="btn-week" class="px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition">Week</button>
+                        <button onclick="setTimeFilter('month')" id="btn-month" class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">Month</button>
+                    </div>
+                </div>
+
+                <!-- Total Spent Card -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-400 font-medium">Total Spent (Last 7 Days)</span>
+                        <span class="text-xs font-semibold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full">+14% vs avg</span>
+                    </div>
+                    <h3 class="text-3xl font-extrabold text-slate-100">$418.50</h3>
+                    
+                    <!-- Visual Category Breakdown Bar (Feedback Iteration #1 - Hybrid Segmented Progress Bar) -->
+                    <div class="space-y-2 pt-2">
+                        <div class="flex justify-between text-xs font-medium text-slate-300">
+                            <span>Category Distribution</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex">
+                            <div class="bg-orange-500 h-full" style="width: 42%;" title="Food & Dining"></div>
+                            <div class="bg-blue-500 h-full" style="width: 28%;" title="Groceries"></div>
+                            <div class="bg-violet-500 h-full" style="width: 18%;" title="Subscriptions"></div>
+                            <div class="bg-emerald-500 h-full" style="width: 12%;" title="Transport"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Breakdown List (Feedback Iteration #1 Fix: Scannable list with explicit chips) -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-bold text-slate-200">Categories Breakdown</h4>
+                    
+                    <div class="space-y-2.5">
+                        <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 rounded-full bg-orange-500 shrink-0"></div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-100">Food & Dining</h5>
+                                    <p class="text-[10px] text-slate-400">12 transactions</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-bold text-slate-100">$175.80</span>
+                                <p class="text-[10px] text-orange-400 font-semibold">42%</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 rounded-full bg-blue-500 shrink-0"></div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-100">Groceries</h5>
+                                    <p class="text-[10px] text-slate-400">4 transactions</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-bold text-slate-100">$117.20</span>
+                                <p class="text-[10px] text-blue-400 font-semibold">28%</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 rounded-full bg-violet-500 shrink-0"></div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-100">Subscriptions</h5>
+                                    <p class="text-[10px] text-slate-400">Spotify, iCloud, Netflix</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-bold text-slate-100">$75.30</span>
+                                <p class="text-[10px] text-violet-400 font-semibold">18%</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 rounded-full bg-emerald-500 shrink-0"></div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-100">Transport</h5>
+                                    <p class="text-[10px] text-slate-400">Uber & Metro Passes</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-bold text-slate-100">$50.20</span>
+                                <p class="text-[10px] text-emerald-400 font-semibold">12%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: SAVINGS GOALS & ROUND-UP CONFIGURATOR -->
+            <section id="view-goals" class="space-y-5 hidden animate-fadeIn">
+                <!-- Header -->
+                <div>
+                    <h2 class="text-xl font-bold tracking-tight">Micro-Savings Goal</h2>
+                    <p class="text-xs text-slate-400">Automate your savings with Round-Ups</p>
+                </div>
+
+                <!-- Active Goal Highlight Card -->
+                <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-3xl p-5 text-white shadow-xl shadow-emerald-600/20 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-semibold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full backdrop-blur-md">Target: $500.00</span>
+                        <span class="text-xs font-bold bg-white text-emerald-800 px-2.5 py-0.5 rounded">68% Done</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold">New MacBook Pro M3</h3>
+                        <p class="text-xs text-emerald-100 mt-0.5">Estimated completion in 18 days</p>
+                    </div>
+                    <div class="w-full h-2.5 bg-black/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-white rounded-full" style="width: 68%;"></div>
+                    </div>
+                </div>
+
+                <!-- Round-Up Configurator & Safety Cap (Feedback Iteration #3 Fix) -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-100">Spare Change Round-Up</h4>
+                            <p class="text-[11px] text-slate-400">Round up every card purchase to the nearest $1.00</p>
+                        </div>
+                        <!-- Live Toggle -->
+                        <button onclick="toggleRoundUpRule()" id="roundUpToggleBtn" class="w-12 h-7 bg-indigo-600 rounded-full transition relative flex items-center p-1 shadow-inner">
+                            <div class="w-5 h-5 bg-white rounded-full shadow-md transform translate-x-5 transition-transform" id="roundUpKnob"></div>
+                        </button>
+                    </div>
+
+                    <hr class="border-slate-800">
+
+                    <!-- Multiplier Selection -->
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-slate-300">Round-Up Multiplier</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setMultiplier(1)" id="mult-1" class="py-2 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300 text-xs font-bold transition">1x ($1.00)</button>
+                            <button onclick="setMultiplier(2)" id="mult-2" class="py-2 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 text-xs font-semibold transition hover:border-slate-700">2x ($2.00)</button>
+                            <button onclick="setMultiplier(5)" id="mult-5" class="py-2 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 text-xs font-semibold transition hover:border-slate-700">5x ($5.00)</button>
+                        </div>
+                    </div>
+
+                    <!-- Safety Cap & Limit (Feedback Iteration #3) -->
+                    <div class="space-y-2 pt-1">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-semibold text-slate-300">Safety Account Cap</label>
+                            <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">Active Protection</span>
+                        </div>
+                        <select class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 transition">
+                            <option>Pause if checking drops below $50.00</option>
+                            <option>Pause if checking drops below $100.00</option>
+                            <option>Pause if checking drops below $200.00</option>
+                        </select>
+                        <p class="text-[10px] text-slate-400 italic">"Your bank will automatically pause round-ups if your balance gets too low."</p>
+                    </div>
+
+                    <button onclick="showToast('Savings Rule Saved Successfully!')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition">
+                        Update Round-Up Rules
+                    </button>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Modern Bottom Navigation Bar -->
+        <nav class="absolute bottom-0 left-0 right-0 h-20 bg-slate-950/90 backdrop-blur-xl border-t border-slate-800/80 px-6 flex items-center justify-between z-30">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center justify-center space-y-1 text-indigo-400 transition group flex-1">
+                <i class="fa-solid fa-house text-base group-hover:scale-110 transition"></i>
+                <span class="text-[10px] font-bold">Home</span>
+            </button>
+            <button onclick="switchTab('analytics')" id="nav-analytics" class="flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-slate-200 transition group flex-1">
+                <i class="fa-solid fa-chart-pie text-base group-hover:scale-110 transition"></i>
+                <span class="text-[10px] font-semibold">Analytics</span>
+            </button>
+            <button onclick="switchTab('goals')" id="nav-goals" class="flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-slate-200 transition group flex-1">
+                <i class="fa-solid fa-piggy-bank text-base group-hover:scale-110 transition"></i>
+                <span class="text-[10px] font-semibold">Round-Ups</span>
+            </button>
+        </nav>
+
+        <!-- In-App Toast Message Box (No alert() used per instructions) -->
+        <div id="toastBox" class="absolute top-12 left-1/2 -translate-x-1/2 bg-slate-900 border border-indigo-500/40 text-slate-100 px-4 py-2.5 rounded-2xl shadow-2xl text-xs font-semibold z-50 transition-all duration-300 opacity-0 pointer-events-none flex items-center space-x-2">
+            <i class="fa-solid fa-circle-check text-emerald-400"></i>
+            <span id="toastText">Action completed successfully</span>
+        </div>
+
+    </main>
+
+    <!-- Interactive Script -->
+    <script>
+        // Update live clock
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('currentTime').innerText = hours + ':' + minutes;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all views
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-analytics').classList.add('hidden');
+            document.getElementById('view-goals').classList.add('hidden');
+
+            // Reset all nav icons
+            document.getElementById('nav-home').className = "flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-slate-200 transition group flex-1";
+            document.getElementById('nav-analytics').className = "flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-slate-200 transition group flex-1";
+            document.getElementById('nav-goals').className = "flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-slate-200 transition group flex-1";
+
+            // Show selected view and activate nav item
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+            document.getElementById('nav-' + tabId).className = "flex flex-col items-center justify-center space-y-1 text-indigo-400 transition group flex-1 font-bold";
+
+            // Scroll phone view to top
+            document.getElementById('scrollContent').scrollTop = 0;
+        }
+
+        // Balance Visibility Toggle
+        let balanceVisible = true;
+        function toggleBalanceVisibility() {
+            balanceVisible = !balanceVisible;
+            const display = document.getElementById('balanceDisplay');
+            const icon = document.getElementById('eyeIcon');
+            if (balanceVisible) {
+                display.innerText = "$4,829.50";
+                icon.className = "fa-regular fa-eye";
+            } else {
+                display.innerText = "$••••••";
+                icon.className = "fa-regular fa-eye-slash";
+            }
+        }
+
+        // Analytics Time Filter Toggle
+        function setTimeFilter(filter) {
+            const btnWeek = document.getElementById('btn-week');
+            const btnMonth = document.getElementById('btn-month');
+            if (filter === 'week') {
+                btnWeek.className = "px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition";
+                btnMonth.className = "px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition";
+                showToast("Switched to Weekly view");
+            } else {
+                btnMonth.className = "px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition";
+                btnWeek.className = "px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition";
+                showToast("Switched to Monthly view");
+            }
+        }
+
+        // Round-up Toggle State
+        let roundUpActive = true;
+        function toggleRoundUpRule() {
+            roundUpActive = !roundUpActive;
+            const knob = document.getElementById('roundUpKnob');
+            const btn = document.getElementById('roundUpToggleBtn');
+            if (roundUpActive) {
+                knob.style.transform = 'translateX(20px)';
+                btn.className = "w-12 h-7 bg-indigo-600 rounded-full transition relative flex items-center p-1 shadow-inner";
+                showToast("Round-Up Rules Activated");
+            } else {
+                knob.style.transform = 'translateX(0px)';
+                btn.className = "w-12 h-7 bg-slate-800 rounded-full transition relative flex items-center p-1 shadow-inner";
+                showToast("Round-Up Rules Paused");
+            }
+        }
+
+        // Multiplier Selector
+        function setMultiplier(mult) {
+            for (let i of [1, 2, 5]) {
+                const b = document.getElementById('mult-' + i);
+                if (i === mult) {
+                    b.className = "py-2 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300 text-xs font-bold transition";
+                } else {
+                    b.className = "py-2 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 text-xs font-semibold transition hover:border-slate-700";
+                }
+            }
+            showToast("Multiplier set to " + mult + "x");
+        }
+
+        // Custom Toast Notification System (replaces alert())
+        function showToast(message) {
+            const toast = document.getElementById('toastBox');
+            document.getElementById('toastText').innerText = message;
+            toast.style.opacity = '1';
+            toast.style.pointerEvents = 'auto';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.pointerEvents = 'none';
+            }, 2500);
+        }
+
+        function showNotificationMsg() {
+            showToast("You have 1 new spending spike alert.");
+        }
+
+        function showQuickModal(featureName) {
+            showToast("Opening " + featureName + " module...");
+        }
+
+        // Theme Toggle (Dark / Light mode simulation for outer container frame)
+        let isDark = true;
+        function toggleDarkMode() {
+            isDark = !isDark;
+            const phone = document.getElementById('phoneContainer');
+            const icon = document.getElementById('themeIcon');
+            if (isDark) {
+                phone.className = "w-full max-w-[390px] h-[780px] bg-slate-950 text-slate-100 rounded-[48px] phone-frame relative overflow-hidden flex flex-col border-4 border-slate-800 transition-colors duration-300";
+                icon.className = "fa-solid fa-moon";
+                showToast("Dark theme enabled");
+            } else {
+                phone.className = "w-full max-w-[390px] h-[780px] bg-white text-slate-900 rounded-[48px] phone-frame relative overflow-hidden flex flex-col border-4 border-slate-300 transition-colors duration-300";
+                icon.className = "fa-solid fa-sun";
+                showToast("Light theme enabled");
+            }
+        }
+    </script>
+</body>
+</html>
